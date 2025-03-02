@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+.expo/
+.expo-shared/
+.env
+
+# Python environment
+gtg-env/
+__pycache__/
+instance/
+*.pyc
