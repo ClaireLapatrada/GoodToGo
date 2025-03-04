@@ -19,7 +19,7 @@ export default function SelectProduct() {
 
   const handleButtonClick = () => {
     // Use router.push to navigate to the details page
-    router.push('/camera');
+    router.push('/show-product');
   };
 
   useEffect(() => {
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     color: 'black',
     alignSelf: 'flex-start',
     paddingTop: 100,
+    fontFamily: 'Shippori-Antique',
   },
   subtext: {
     fontSize: 14,
