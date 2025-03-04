@@ -32,8 +32,9 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="select-product" />
-        <Stack.Screen name="camera" />
         <Stack.Screen name="index" />
+        <Stack.Screen name="show-product" />
+        <Stack.Screen name="condition-grading" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

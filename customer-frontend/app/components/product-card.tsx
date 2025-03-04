@@ -30,11 +30,11 @@ export default function ProductCard({
       <Text style={[styles.price, { fontFamily: 'Shippori-Antique' }]}>${price}</Text>
       <View style={styles.details}>
         <Text style={[styles.name, { fontFamily: 'Shippori-Antique' }]}>{name}</Text>
-        <Text style={[styles.info, { fontFamily: 'Shippori-Antique' }]}>Color: {color}</Text>
-        <Text style={[styles.info, { fontFamily: 'Shippori-Antique' }]}>Size: {size}</Text>
-        <Text style={[styles.info, { fontFamily: 'Shippori-Antique' }]}>Order ID: {orderID}</Text>
-        <Text style={[styles.info, { fontFamily: 'Shippori-Antique' }]}>Ordered: {ordered}</Text>
-        <Text style={[styles.info, { fontFamily: 'Shippori-Antique' }]}>Received: {received}</Text>
+        <Text style={[styles.info]}>Color: {color}</Text>
+        <Text style={[styles.info]}>Size: {size}</Text>
+        <Text style={[styles.info]}>Order ID: {orderID}</Text>
+        <Text style={[styles.info]}>Ordered: {ordered}</Text>
+        <Text style={[styles.info]}>Received: {received}</Text>
       </View>
     </View>
   );
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 10,
     width: 300,
-    height: 150,
+    height: 120,
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'space-between',
