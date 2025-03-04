@@ -69,33 +69,37 @@ const FloatingBlobsBackground = () => {
 
   return (
     <View style={styles.container}>
-      {/* Color blobs with animation */}
-      <Animated.View
-        style={[styles.blob1, { transform: [{ translateY: blob1TranslateY }] }]}
-      />
-      <Animated.View
-        style={[styles.blob2, { transform: [{ translateY: blob2TranslateY }] }]}
-      />
-      <Animated.View
-        style={[styles.blob3, { transform: [{ translateY: blob3TranslateY }] }]}
-      />
-      <Animated.View
-        style={[styles.blob4, { transform: [{ translateY: blob3TranslateY }] }]}
-      />
-      <Animated.View
-        style={[styles.blob5, { transform: [{ translateY: blob3TranslateY }] }]}
-      />
-      <Animated.View
-        style={[styles.blob6, { transform: [{ translateY: blob3TranslateY }] }]}
-      />
+  {/* White background behind the blobs */}
+  <View style={styles.whiteBackground} />
 
-      {/* Background blur layer */}
-      <BlurView
-        style={styles.backgroundBlur}
-        intensity={60} // Adjust blur intensity
-        tint="light" // Set blur style (light or dark)
-      />
-    </View>
+  {/* Color blobs with animation */}
+  <Animated.View
+    style={[styles.blob1, { transform: [{ translateY: blob1TranslateY }] }]}
+  />
+  <Animated.View
+    style={[styles.blob2, { transform: [{ translateY: blob2TranslateY }] }]}
+  />
+  <Animated.View
+    style={[styles.blob3, { transform: [{ translateY: blob3TranslateY }] }]}
+  />
+  <Animated.View
+    style={[styles.blob4, { transform: [{ translateY: blob3TranslateY }] }]}
+  />
+  <Animated.View
+    style={[styles.blob5, { transform: [{ translateY: blob3TranslateY }] }]}
+  />
+  <Animated.View
+    style={[styles.blob6, { transform: [{ translateY: blob3TranslateY }] }]}
+  />
+
+  {/* Background blur layer */}
+  <BlurView
+    style={styles.backgroundBlur}
+    intensity={60} // Adjust blur intensity
+    tint="light" // Set blur style (light or dark)
+  />
+</View>
+
   );
 };
 
@@ -107,6 +111,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  whiteBackground: {
+    position: 'absolute',  // Position the white background at the back
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#f4f1e9', // Set background color to white
   },
   blob1: {
     position: 'absolute',
