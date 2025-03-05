@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import datetime
 import os
 from functions import condition_grading  # Import the condition_grading function
 
@@ -28,15 +29,19 @@ def init_routes(app):
             if 'photos' not in request.files:
                 return jsonify({"message": "No photos part in the request"}), 400
 
-            # photos = request.files.getlist('photos')
-
-            # # Save the photos
-            # for index, photo in enumerate(photos):
-            #     if photo and allowed_file(photo.filename):
-            #         filename = f"photo_{index + 1}.jpg"
-            #         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            #         photo.save(filepath)
-            #         saved_photos.append(filepath)
+            photos = request.files.getlist('photos')
+            # Generate folder name
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            folder_name = f"upload_{timestamp}"
+            folder_path = os.path.join(UPLOAD_FOLDER, folder_name)
+            os.makedirs(folder_path)
+            # Save the photos
+            for index, photo in enumerate(photos):
+                if photo and allowed_file(photo.filename):
+                    filename = f"photo_{index + 1}.jpg"
+                    filepath = os.path.join(folder_path, filename)
+                    photo.save(filepath)
+                    saved_photos.append(filepath)
 
             print('Received photos:', saved_photos)
             print('Received price:', price)
