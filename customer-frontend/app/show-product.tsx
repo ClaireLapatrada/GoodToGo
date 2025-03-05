@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Pressable, TextInput, ScrollView } from 'react-native';
 import { CameraMode, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { Image } from 'expo-image';
 import { fetchData } from '@/app/api/product-img/route';
 import { AntDesign, Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useNavigation } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
 import FloatingBlobsBackground from '@/app/components/background-blur';
+import { ProductContext } from '@/app/productContext';
 
 // Define the structure for our photos
 interface PhotoItem {
@@ -17,7 +18,26 @@ interface PhotoItem {
     status: 'red' | 'yellow' | 'green';
   }
 
-export default function ShowProduct() {
+  interface Product {
+    name: string;
+    id: string;
+    price: number;
+    ordered: string;
+    received: string;
+    condition?: string;
+    estimatedRefundValue?: number;
+    eligibleForResale?: boolean;
+    repairsNeeded?: boolean;
+    recommendedAction?: string;
+  }
+
+interface SelectProductProps {
+  product: Product | null;
+  setProduct: (product: Product) => void;
+}
+
+const ShowProduct: React.FC = () => {
+  const { product, setProduct } = useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [permission, requestPermission] = useCameraPermissions();
@@ -28,7 +48,6 @@ export default function ShowProduct() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [returnReason, setReturnReason] = useState('');
   const [error, setError] = useState<string | null>(null);
-  
   // Create the checklist of photos to take
   const [photosList, setPhotosList] = useState<PhotoItem[]>([
     { label: 'Top Angle', uri: null, status: 'yellow' },
@@ -50,6 +69,10 @@ export default function ShowProduct() {
   }, [navigation]);
 
   useEffect(() => {
+    console.log('Product in ShowProduct:', product);
+  }, [product]);
+
+  useEffect(() => {
     const getMessage = async () => {
       try {
         const data = await fetchData();
@@ -67,6 +90,11 @@ export default function ShowProduct() {
   if (!fontsLoaded) {
     return <AppLoading />;
   }
+
+  const handleMenuClick = () => {
+    // Handle menu click
+    router.push('/select-product');
+  };
 
   const takePicture = async () => {
     const photo = await ref.current?.takePictureAsync();
@@ -109,6 +137,11 @@ export default function ShowProduct() {
 
   const handleSubmit = async () => {
     try {
+      // Navigate or handle response as needed
+      router.push({
+        pathname: '/assessment',
+        params: { product: JSON.stringify(product) },
+      });
       const formData = new FormData();
   
       // Add photos to form data
@@ -139,14 +172,17 @@ export default function ShowProduct() {
       const data = await response.json();
       console.log('Data sent successfully:', data);
   
-      // Navigate or handle response as needed
-      router.push('/');
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
   
-  
+  const goNext = () => {
+    router.push({
+      pathname: '/assessment',
+      params: { product: JSON.stringify(product) },
+    });
+  };
 
   const toggleFacing = () => {
     setFacing((prev) => (prev === "back" ? "front" : "back"));
@@ -196,6 +232,7 @@ export default function ShowProduct() {
           mute={false}
           responsiveOrientationWhenOrientationLocked
         >
+          {!photosList.every((photo) => photo.status === 'green') && 
           <View style={styles.shutterContainer}>
             <TouchableOpacity style={styles.shutterBtn} onPress={takePicture}>
               <View style={styles.shutterBtnInner} />
@@ -204,7 +241,7 @@ export default function ShowProduct() {
             <TouchableOpacity style={styles.cameraControlBtn} onPress={toggleFacing}>
               <FontAwesome6 name="rotate" size={22} color="white" />
             </TouchableOpacity>
-          </View>
+          </View>}
         </CameraView>
       </View>
     );
@@ -246,13 +283,13 @@ export default function ShowProduct() {
     <FloatingBlobsBackground />
     <View style={styles.header}>
       <TouchableOpacity>
-        <MaterialIcons name="menu" size={24} color="black" />
+        <MaterialIcons name="menu" size={24} color="black" onPress={handleMenuClick}/>
       </TouchableOpacity>
     </View>
 
     <Text style={styles.title}>Show us what's wrong with the product</Text>
     <TouchableOpacity onPress={resetPhotosList} style={styles.resetButton}>
-        <MaterialIcons name="refresh" size={30} color="black" />
+        <MaterialIcons name="refresh" size={24} color="black" />
     </TouchableOpacity>
     {currentUri ? renderPicture() : renderCamera()}
 
@@ -261,13 +298,14 @@ export default function ShowProduct() {
     <View style={styles.selectedContainer}>
       <Text style={styles.selectedText}>{selectedProduct}</Text>
 
-    {/* Continue Button - only show when all photos are taken */}
-    {photosList.every((photo) => photo.status === 'green') && (
-<TouchableOpacity style={styles.continueButton} onPress={handleSubmit}>
-    <Text style={styles.continueText}>Continue</Text>
-</TouchableOpacity>
-)}
-
+      {/* Continue Button - only show when all photos are taken */}
+      {photosList.every((photo) => photo.status === 'green') && (
+      <TouchableOpacity style={styles.continueButton} onPress={handleSubmit}>
+        <Text style={styles.continueText}>Continue</Text>
+      </TouchableOpacity>)}
+      <TouchableOpacity style={styles.continueButton} onPress={goNext}>
+        <Text style={styles.continueText}>gogogo</Text>
+      </TouchableOpacity>
     </View>
   </View>
   );
@@ -475,8 +513,10 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     position: 'absolute',
-    top: 155,
-    right: 190,
+    top: 157,
+    right: 195,
     marginBottom: 10,
   },
 });
+
+export default ShowProduct;

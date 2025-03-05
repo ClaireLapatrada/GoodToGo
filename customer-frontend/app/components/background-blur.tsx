@@ -14,7 +14,7 @@ const FloatingBlobsBackground = () => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(blob1TranslateY, {
-          toValue: -20,
+          toValue: -50,
           duration: 3000,
           easing: Easing.ease,
           useNativeDriver: true,
@@ -31,7 +31,7 @@ const FloatingBlobsBackground = () => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(blob2TranslateY, {
-          toValue: -25,
+          toValue: -50,
           duration: 3500,
           easing: Easing.ease,
           useNativeDriver: true,
@@ -48,7 +48,7 @@ const FloatingBlobsBackground = () => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(blob3TranslateY, {
-          toValue: -30,
+          toValue: -50,
           duration: 4000,
           easing: Easing.ease,
           useNativeDriver: true,

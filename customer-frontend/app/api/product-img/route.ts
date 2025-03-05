@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 export const fetchData = async () => {
-  const API_URL = 'http://192.168.68.70:5000/api/data'; // Replace with your actual URL
-
+  const API_URL = 'http://192.168.68.70:5000/api/data';
   try {
     const response = await fetch(API_URL);
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
-
     const data = await response.json();
-    return data.message; // Assuming the backend returns an object with a 'message' property
+    return data; // Return the full data object
   } catch (error) {
     console.error('Error fetching data:', error);
-    throw error; // Optionally, return a default value or handle error gracefully
+    throw error;
   }
 };
 
