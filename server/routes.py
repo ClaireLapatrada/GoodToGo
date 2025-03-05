@@ -16,7 +16,16 @@ def init_routes(app):
 
     @app.route('/api/data', methods=['GET'])
     def get_data():
-        return jsonify({'message': 'Hello from Flask backend!'})
+        # Mock data for product assessment
+        assessment_data = {
+            'condition': 'Used-Good',
+            'estimatedRefundValue': 120,
+            'isEligibleToReturn': True,
+            'noRepairsNeeded': True,
+            'withinReturnWindow': True
+        }
+        print('Returning assessment data:', assessment_data)
+        return jsonify(assessment_data)
 
     @app.route('/api/data', methods=['POST'])
     def condition_grading_route():
