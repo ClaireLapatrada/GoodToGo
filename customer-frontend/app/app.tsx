@@ -8,6 +8,8 @@ import ShowProduct from '@/app/show-product';
 import Assessment from '@/app/assessment';
 import Barcode from '@/app/barcode';
 import { ProductContext } from '@/app/productContext';
+import PaymentBillingPage from '@/app/payment-billing';
+import RefundStatus from '@/app/refund-status';
 
 interface Product {
     name: string;
@@ -47,6 +49,8 @@ const App = () => {
           />
           <Stack.Screen name="Assessment" component={Assessment} />
           <Stack.Screen name="Barcode" component={Barcode} />
+          <Stack.Screen name="PaymentBillingPage" component={PaymentBillingPage} />
+          <Stack.Screen name="RefundStatus" component={RefundStatus} />   
         </Stack.Navigator>
       </NavigationContainer>
     </ProductContext.Provider>  

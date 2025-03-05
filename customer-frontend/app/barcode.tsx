@@ -36,6 +36,10 @@ const QRCodeScreen: React.FC = () => {
         setIsQRCodeModalVisible(!isQRCodeModalVisible);
     };
 
+    const handleButtonClick = () => {
+        router.push('/payment-billing');
+      };
+
     useEffect(() => {
         console.log('Product in Barcode:', product);
     }, [product]);
@@ -103,7 +107,7 @@ const QRCodeScreen: React.FC = () => {
             </View>
 
             <TouchableOpacity style={styles.continueButton}>
-                <Text style={styles.continueButtonText}>Continue</Text>
+                <Text style={styles.continueButtonText} onPress={handleButtonClick}>Continue</Text>
             </TouchableOpacity>
 
             {/* Expanded QR Code Modal */}
