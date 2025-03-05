@@ -137,45 +137,42 @@ const ShowProduct: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // Navigate or handle response as needed
-      router.push({
-        pathname: '/assessment',
-        params: { product: JSON.stringify(product) },
-      });
+      // Navigate with query parameters
+      router.push('/assessment');
+  
       const formData = new FormData();
   
       // Add photos to form data
       photosList.forEach((photo, index) => {
         if (photo.uri) {
-          const fileName = `photo_${index + 1}.jpg`; // Specify the name for the backend
-          const photoBlob = {
+          const fileName = `photo_${index + 1}.jpg`;
+          formData.append('photos', {
             uri: photo.uri,
-            name: fileName, // Use the custom name
-            type: 'image/jpeg', // Adjust based on the actual file type
-          };
-  
-          formData.append('photos', photoBlob as any); // Ensure proper typing
+            name: fileName,
+            type: 'image/jpeg',
+          } as unknown as Blob);
         }
       });
-  
       // Add reason to form data
       formData.append('reason', returnReason);
-  
+      formData.append('price', product?.price.toString() || '');
+      // Send request without manually setting Content-Type
       const response = await fetch('http://192.168.68.70:5000/api/data', {
         method: 'POST',
         body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data', // Ensure correct content type
-        },
       });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
   
       const data = await response.json();
       console.log('Data sent successfully:', data);
-  
     } catch (error) {
       console.error('Error sending data:', error);
     }
   };
+  
   
   const goNext = () => {
     router.push({
@@ -303,9 +300,9 @@ const ShowProduct: React.FC = () => {
       <TouchableOpacity style={styles.continueButton} onPress={handleSubmit}>
         <Text style={styles.continueText}>Continue</Text>
       </TouchableOpacity>)}
-      <TouchableOpacity style={styles.continueButton} onPress={goNext}>
+      {/* <TouchableOpacity style={styles.continueButton} onPress={goNext}>
         <Text style={styles.continueText}>gogogo</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   </View>
   );

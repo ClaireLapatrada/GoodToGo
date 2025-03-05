@@ -39,7 +39,8 @@ export default function RootLayout() {
           <Stack.Screen name="show-product" />
           <Stack.Screen name="assessment" />
           <Stack.Screen name="barcode" />
-          <Stack.Screen name="qr-code" />
+          <Stack.Screen name="payment-billing" />
+          <Stack.Screen name="refund-status" />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
