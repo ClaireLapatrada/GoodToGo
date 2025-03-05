@@ -58,14 +58,11 @@ export default function Home() {
     }).start();
   };
 
-  const moveButtonUp = () => {
-    Animated.timing(buttonTranslateY, {
-      toValue: -230, 
-      duration: 1500,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  };
+  useEffect(() => {
+    moveTextUp();
+    fadeInButton();
+    moveButtonUp();
+  }, []);
 
   const fadeInButton = () => {
     Animated.timing(buttonOpacity, {
@@ -76,15 +73,18 @@ export default function Home() {
     }).start();
   };
 
-  useEffect(() => {
-    moveTextUp();
-    fadeInButton();
-    moveButtonUp();
-  }, []);
+  const moveButtonUp = () => {
+    Animated.timing(buttonTranslateY, {
+      toValue: -50, // Adjusted to a smaller value
+      duration: 1500,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
 
   return (
     <View style={styles.pageContainer}>
-      <FloatingBlobsBackground /> 
+      <FloatingBlobsBackground />
       <Animated.Text
         style={[
           styles.text,
@@ -93,17 +93,19 @@ export default function Home() {
       >
         Your item is Good to Go?
       </Animated.Text>
-
-      <Animated.View
-        style={[
-          styles.buttonContainer,
-          { opacity: buttonOpacity, transform: [{ translateY: buttonTranslateY }] }, 
-        ]}
-      >
-        <TouchableOpacity style={styles.button}  onPress={handleButtonClick}>
+      <TouchableOpacity style={styles.button} onPress={handleButtonClick}>
           <Text style={styles.buttonText}>Return item</Text>
         </TouchableOpacity>
-      </Animated.View>
+      {/* <Animated.View
+        style={[
+          styles.buttonContainer,
+          { opacity: buttonOpacity, transform: [{ translateY: buttonTranslateY }] },
+        ]}
+      >
+        <TouchableOpacity style={styles.button} onPress={handleButtonClick}>
+          <Text style={styles.buttonText}>Return item</Text>
+        </TouchableOpacity>
+      </Animated.View> */}
     </View>
   );
 }
@@ -117,12 +119,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     color: 'black',
+    marginBottom: 20, // Add margin to separate text and button
   },
   buttonContainer: {
-    flex: 2,
+    justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 200, // Adjust the bottom position to ensure it's in view
   },
   button: {
     backgroundColor: 'black',
