@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// SelectProduct.tsx
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { fetchData } from '@/app/api/product-img/route';
 import { useFonts } from 'expo-font';
@@ -7,9 +8,29 @@ import FloatingBlobsBackground from '@/app/components/background-blur';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import ProductCard from './components/product-card';
+import { ProductContext } from '@/app/productContext';
 
-export default function SelectProduct() {
-  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+interface Product {
+  name: string;
+  id: string;
+  price: number;
+  ordered: string;
+  received: string;
+  condition?: string;
+  estimatedRefundValue?: number;
+  eligibleForResale?: boolean;
+  repairsNeeded?: boolean;
+  recommendedAction?: string;
+}
+
+interface SelectProductProps {
+  product: Product | null;
+  setProduct: (product: Product) => void;
+}
+
+const SelectProduct: React.FC = () => {
+  const { product, setProduct } = useContext(ProductContext);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigation = useNavigation();
   const router = useRouter();
@@ -17,10 +38,21 @@ export default function SelectProduct() {
     'Shippori-Antique': require('../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
   });
 
-  const handleButtonClick = () => {
-    // Use router.push to navigate to the details page
+// SelectProduct.tsx
+const handleButtonClick = () => {
+  if (selectedProduct) {
+    const productToSet = {
+      name: selectedProduct.name,
+      id: selectedProduct.id,
+      price: selectedProduct.price,
+      ordered: selectedProduct.ordered,
+      received: selectedProduct.received,
+    };
+    setProduct(productToSet);
+    // Use navigation method that matches your _layout.tsx
     router.push('/show-product');
-  };
+  }
+};
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -46,9 +78,9 @@ export default function SelectProduct() {
   }
 
   const products = [
-    { name: "Product A", color: "Red", size: "M" },
-    { name: "Product B", color: "Blue", size: "L" },
-    { name: "Product C", color: "Green", size: "S" },
+    { name: "Product A", id: "123", size: "M", color: "Black", price: 99.99, ordered: "2024-03-05", received: "2024-03-05"},
+    { name: "Product B", id: "456", size: "L", color: "White", price: 199.99, ordered: "2024-03-05", received: "2024-03-05"},
+    { name: "Product C", id: "789", size: "S", color: "Red", price: 299.99, ordered: "2024-03-05", received: "2024-03-05"},
   ];
 
   return (
@@ -59,26 +91,26 @@ export default function SelectProduct() {
 
       <ScrollView style={styles.cardContainer}>
         {products.map((product, index) => (
-          <TouchableOpacity key={index} onPress={() => setSelectedProduct(product.name)}>
+            <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
             <ProductCard
               imageUri=""
               name={product.name}
               color={product.color}
               size={product.size}
-              orderID="123456"
-              ordered="2024-03-01"
-              received="2024-03-05"
-              price="99.99"
-              isSelected={selectedProduct === product.name}
+              orderID={product.id}
+              ordered={product.ordered}
+              received={product.received}
+              price={product.price.toString()}
+              isSelected={selectedProduct?.name === product.name}
             />
-          </TouchableOpacity>
+            </TouchableOpacity>
         ))}
       </ScrollView>
 
       {/* Bottom Fixed Selection Tab */}
       {selectedProduct && (
         <View style={styles.selectedContainer}>
-          <Text style={styles.selectedText}>{selectedProduct}</Text>
+          <Text style={styles.selectedText}>{selectedProduct.name}</Text>
           <TouchableOpacity style={styles.continueButton} onPress={handleButtonClick}>
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>
@@ -150,3 +182,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Shippori-Antique',
   },
 });
+
+export default SelectProduct;
