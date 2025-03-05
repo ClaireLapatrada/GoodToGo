@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 export const fetchData = async () => {
-  const API_URL = 'http://192.168.68.70:5000/api/data'; // Replace with your actual URL
+  const API_URL = 'http://127.0.0.1:5000/api/data'; // Replace with your actual URL
 
   try {
     const response = await fetch(API_URL);
@@ -18,7 +18,7 @@ export const fetchData = async () => {
 };
 
 export const sendReturnData = async (photos: string[], reason: string) => {
-  const API_URL = 'http://192.168.68.70:5000/api/data'; // Replace with your actual URL
+  const API_URL = 'http://127.0.0.1:5000/api/data'; // Replace with your actual URL
 
   try {
     const response = await fetch(API_URL, {
