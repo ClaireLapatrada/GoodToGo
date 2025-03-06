@@ -13,7 +13,7 @@ def condition_grading(price="100"):
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="")
+        genai.configure(api_key="***REMOVED***")
 
         # Define the prompt
         prompt = (
@@ -47,7 +47,7 @@ def recommended_action(price="100"):
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="")
+        genai.configure(api_key="***REMOVED***")
 
         prompt = (
             f"Analyze the following images and assess their physical condition based on visible wear, damage, or missing parts. "
@@ -83,7 +83,7 @@ def recommended_repair():
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="")
+        genai.configure(api_key="***REMOVED***")
 
         prompt = (
             f"Analyze the following images and identify if repair is needed and if so, the repair actions needed to restore the product to a functional state. "
@@ -104,3 +104,27 @@ def recommended_repair():
 
     except Exception as e:
         return f"Error: Unable to recommend a repair action for the images. Details: {str(e)}"
+
+# def wardrobe_detection():
+#     """Detects text in the file."""
+#     from google.cloud import vision
+
+#     client = vision.ImageAnnotatorClient()
+
+#     with open("uploads/photo_6.JPG", "rb") as image_file:
+#         content = image_file.read()
+
+#     image = vision.Image(content=content)
+
+#     response = client.text_detection(image=image)
+#     texts = response.text_annotations
+
+#     print("Texts:")
+
+#     if response.error.message:
+#         raise Exception(
+#             "{}\nFor more info on error messages, check: "
+#             "https://cloud.google.com/apis/design/errors".format(response.error.message)
+#         )
+
+#     return texts

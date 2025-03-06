@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import os
+import json
 from functions import condition_grading, recommended_action, recommended_repair  # Import all functions
+from wardrobing import *
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
@@ -31,6 +33,17 @@ def init_routes(app):
         try:
             # Get the price from the request (default to "100" if not provided)
             price = request.form.get('price', '100')
+            
+            # Correctly extract userData
+            if request.is_json:
+                userData = request.get_json().get('userData', {})
+            else:
+                userData = request.form.get('userData', '{}')  # Default to empty JSON string if missing
+                try:
+                    userData = json.loads(userData)  # Convert string to dictionary
+                except json.JSONDecodeError:
+                    return jsonify({"message": "Invalid JSON in userData"}), 400
+
             saved_photos = []
 
             # Check if 'photos' part is present in the request
@@ -49,25 +62,28 @@ def init_routes(app):
 
             print('Received photos:', saved_photos)
             print('Received price:', price)
+            print('Received userData:', userData)
 
-            # Call the condition_grading function with the saved photo paths and price
-            grading_result = condition_grading(price)
-            # Call the recommended_action function with the price
-            action_result = recommended_action(price)
-            # Call the recommended_repair function
-            repair_result = recommended_repair()
+            # Ensure all results are JSON serializable by converting NumPy types
+            grading_result = int(condition_grading(price)) if isinstance(condition_grading(price), np.integer) else condition_grading(price)
+            action_result = int(recommended_action(price)) if isinstance(recommended_action(price), np.integer) else recommended_action(price)
+            repair_result = recommended_repair()  # Assuming this is already JSON safe
+            wardrobing_result = is_wardrobe(userData)
 
             # Return the grading results, recommended action, and recommended repair as a response
             return jsonify({
                 "message": "Data received and photos uploaded successfully!",
                 "grading_result": grading_result,
                 "recommended_action": action_result,
-                "recommended_repair": repair_result
+                "recommended_repair": repair_result,
+                "wardrobing_result": wardrobing_result
             }), 200
 
         except Exception as e:
             print(f"Error processing the request: {e}")
-            return jsonify({"message": "Error processing the data"}), 500
+            return jsonify({"message": f"Error processing the data: {str(e)}"}), 500
+
+
 
 # Initialize the Flask app
 app = Flask(__name__)

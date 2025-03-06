@@ -8,14 +8,20 @@ import FloatingBlobsBackground from './components/background-blur';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 
+
 interface Product {
-  name: string;
-  id: string;
-  price: number;
-  eligibleForResale?: boolean;
-  repairsNeeded?: boolean;
-  recommendedAction?: string;
-}
+    name: string;
+    id: string;
+    price: number;
+    ordered: string;
+    received: string;
+    condition?: string;
+    estimatedRefundValue?: number;
+    eligibleForResale?: boolean;
+    repairsNeeded?: boolean;
+    recommendedAction?: string;
+    isWardrobing?: boolean;
+  }
 
 const QRCodeScreen: React.FC = () => {
     const router = useRouter();

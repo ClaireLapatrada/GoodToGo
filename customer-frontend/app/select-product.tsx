@@ -15,6 +15,7 @@ interface RecommendedAction {
   value: number;
 }
 
+
 interface Product {
   name: string;
   id: string;
@@ -25,8 +26,8 @@ interface Product {
   estimatedRefundValue?: number;
   eligibleForResale?: boolean;
   repairsNeeded?: boolean;
-  recommendedAction?: RecommendedAction[];
-  recommendedRepair?: string;
+  recommendedAction?: string;
+  isWardrobing?: boolean;
 }
 
 interface SelectProductProps {

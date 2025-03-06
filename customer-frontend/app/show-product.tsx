@@ -42,6 +42,17 @@ interface SelectProductProps {
   setProduct: (product: Product) => void;
 }
 
+  const userData = {
+    "name": "John Doe",
+    "email": "johnd123@gmail.com",
+    "ip": "45.134.56.0",
+    "amountReturned": 10,
+    "amountBought": 200,
+    "productsBought": 5,
+    "productsReturned": 1,
+    "numFailedAttempts": 0,
+}
+
 const ShowProduct: React.FC = () => {
   const { product, setProduct } = useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
@@ -61,6 +72,7 @@ const ShowProduct: React.FC = () => {
     { label: 'Side Angle 2', uri: null, status: 'red' },
     { label: 'Bottom', uri: null, status: 'red' },
     { label: 'Brand', uri: null, status: 'red' },
+    { label: 'Receipt', uri: null, status: 'red' },
   ]);
   
   const navigation = useNavigation();
@@ -162,6 +174,7 @@ const ShowProduct: React.FC = () => {
       // Add reason to form data
       formData.append('reason', returnReason);
       formData.append('price', product?.price.toString() || '');
+      formData.append('userData', JSON.stringify(userData));
       
       // Send request without manually setting Content-Type
       const response = await fetch('http://192.168.68.70:5000/api/data', {
@@ -202,6 +215,9 @@ const ShowProduct: React.FC = () => {
       console.log("Unextracted data:", data.recommended_action);      
       const recommendedActionStr = data.recommended_action.replace(/```json|```/g, '').trim();
 
+      const isWardrobing = data.wardrobing_result;
+      console.log("Wardrobe:", isWardrobing);
+
       // If product exists, set updated product info
       if (product) {
         const productToSet = {
@@ -216,6 +232,7 @@ const ShowProduct: React.FC = () => {
           repairsNeeded: isrepairNeeded,
           recommendedAction: recommendedActionStr,
           recommendedRepair: recommendedRepair,
+          isWardrobing: isWardrobing,
         };
         setProduct(productToSet);
       }
@@ -349,17 +366,14 @@ const ShowProduct: React.FC = () => {
 
     <View style={styles.selectedContainer}>
       <Text style={styles.selectedText}>{selectedProduct}</Text>
-      <TouchableOpacity style={styles.continueButton} onPress={() => router.push('/assessment')}>
+      {/* <TouchableOpacity style={styles.continueButton} onPress={() => router.push('/assessment')}>
         <Text style={styles.continueText}>gogogo</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {/* Continue Button - only show when all photos are taken */}
       {photosList.every((photo) => photo.status === 'green') && (
       <TouchableOpacity style={styles.continueButton} onPress={handleSubmit}>
         <Text style={styles.continueText}>Continue</Text>
       </TouchableOpacity>)}
-      {/* <TouchableOpacity style={styles.continueButton} onPress={goNext}>
-        <Text style={styles.continueText}>gogogo</Text>
-      </TouchableOpacity> */}
     </View>
   </View>
   );

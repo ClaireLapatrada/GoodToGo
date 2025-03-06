@@ -32,6 +32,7 @@ interface Product {
   repairsNeeded: boolean;
   recommendedAction: RecommendedAction[];
   recommendedRepair: string;
+  isWardrobing: boolean;
 }
 
   interface SelectProductProps {
@@ -72,9 +73,9 @@ interface Product {
   
     useEffect(() => {
       const timer = setTimeout(() => {
-        setAssessmentData('Data loaded after 2 seconds');
+        setAssessmentData('Data loaded after 7 seconds');
         setScreenState('loaded');
-      }, 5000); // 5 seconds for loading data
+      }, 7000); // 5 seconds for loading data
   
       return () => clearTimeout(timer);
     }, []);
@@ -231,6 +232,12 @@ interface Product {
                 Within 30 days of purchase
               </Text>
             </View>
+            <View style={styles.checklistItem}>
+              {product && renderChecklistIcon(!product.isWardrobing)}
+              <Text style={[styles.checklistItemText, product && product.isWardrobing && styles.ineligibleText]}>
+                No wardrobing behavior detected
+              </Text>
+            </View>
           </View>
           
           { product?.condition === 'Salvage' &&
@@ -304,6 +311,12 @@ interface Product {
               {renderChecklistIcon(withinReturnWindow())}
               <Text style={[styles.checklistItemText, !withinReturnWindow() && styles.ineligibleText]}>
                 Within 30 days of purchase
+              </Text>
+            </View>
+            <View style={styles.checklistItem}>
+              {product && renderChecklistIcon(!product.isWardrobing)}
+              <Text style={[styles.checklistItemText, product && product.isWardrobing && styles.ineligibleText]}>
+                No wardrobing behavior detected
               </Text>
             </View>
           </View>
