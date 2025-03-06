@@ -18,6 +18,11 @@ interface PhotoItem {
     status: 'red' | 'yellow' | 'green';
   }
 
+interface RecommendedAction {
+    action: string;
+    value: number;
+  }
+  
   interface Product {
     name: string;
     id: string;
@@ -28,7 +33,8 @@ interface PhotoItem {
     estimatedRefundValue?: number;
     eligibleForResale?: boolean;
     repairsNeeded?: boolean;
-    recommendedAction?: string;
+    recommendedAction?: RecommendedAction[];
+    recommendedRepair?: string;
   }
 
 interface SelectProductProps {
@@ -156,6 +162,7 @@ const ShowProduct: React.FC = () => {
       // Add reason to form data
       formData.append('reason', returnReason);
       formData.append('price', product?.price.toString() || '');
+      
       // Send request without manually setting Content-Type
       const response = await fetch('http://192.168.68.70:5000/api/data', {
         method: 'POST',
@@ -167,7 +174,55 @@ const ShowProduct: React.FC = () => {
       }
   
       const data = await response.json();
+      
+      // Extracting grading result
+      const condition = data.grading_result.split(',')[0].trim(); // Grabbing condition
+      const estimatedRefundValue = parseFloat(data.grading_result.split(',')[1].trim()); // Grabbing estimated value
+      
+      console.log("Extracted data:", condition, estimatedRefundValue);
+      // Set default eligibility for return
+      let isEligibleToReturn = true;
+      if (product && estimatedRefundValue < product.price * 0.5) {
+        isEligibleToReturn = false; // Mark as ineligible for return if value is less than 50% of original price
+      }
+      
+      // Extracting recommended repair (if any)
+      const repairResults = data.recommended_repair.trim();
+      let isrepairNeeded = true;
+      let recommendedRepair = 'No repair needed';
+      
+      if (repairResults.toLowerCase() !== 'no') {
+        isrepairNeeded = false;
+        recommendedRepair = repairResults;  // Taking the recommended repair actions
+      }
+      
+      console.log("Extracted data:", isEligibleToReturn, isrepairNeeded, recommendedRepair);
+
+      // Parsing recommended action JSON (action results)
+      console.log("Unextracted data:", data.recommended_action);      
+      const recommendedActionStr = data.recommended_action.replace(/```json|```/g, '').trim();
+
+      // If product exists, set updated product info
+      if (product) {
+        const productToSet = {
+          name: product.name,
+          id: product.id,
+          price: product.price,
+          ordered: product.ordered,
+          received: product.received,
+          condition: condition,
+          estimatedRefundValue: estimatedRefundValue,
+          eligibleForResale: isEligibleToReturn,
+          repairsNeeded: isrepairNeeded,
+          recommendedAction: recommendedActionStr,
+          recommendedRepair: recommendedRepair,
+        };
+        setProduct(productToSet);
+      }
+
+      // Logging for debugging
       console.log('Data sent successfully:', data);
+  
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -294,7 +349,9 @@ const ShowProduct: React.FC = () => {
 
     <View style={styles.selectedContainer}>
       <Text style={styles.selectedText}>{selectedProduct}</Text>
-
+      <TouchableOpacity style={styles.continueButton} onPress={() => router.push('/assessment')}>
+        <Text style={styles.continueText}>gogogo</Text>
+      </TouchableOpacity>
       {/* Continue Button - only show when all photos are taken */}
       {photosList.every((photo) => photo.status === 'green') && (
       <TouchableOpacity style={styles.continueButton} onPress={handleSubmit}>
@@ -333,7 +390,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingHorizontal: 50,
-
   },
   squareCamera: {
     width: '100%',

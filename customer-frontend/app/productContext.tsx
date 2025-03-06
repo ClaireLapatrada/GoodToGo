@@ -1,18 +1,24 @@
 // app/productContext.tsx
 import React, { createContext, useState, ReactNode } from 'react';
 
-export interface Product {
-    name: string;
-    id: string;
-    price: number;
-    ordered: string;
-    received: string;
-    condition?: string;
-    estimatedRefundValue?: number;
-    eligibleForResale?: boolean;
-    repairsNeeded?: boolean;
-    recommendedAction?: string;
-  }
+interface RecommendedAction {
+  action: string;
+  value: number;
+}
+
+interface Product {
+  name: string;
+  id: string;
+  price: number;
+  ordered: string;
+  received: string;
+  condition?: string;
+  estimatedRefundValue?: number;
+  eligibleForResale?: boolean;
+  repairsNeeded?: boolean;
+  recommendedAction?: RecommendedAction[];
+  recommendedRepair?: string;
+}
 
 interface ProductContextType {
   product: Product | null;

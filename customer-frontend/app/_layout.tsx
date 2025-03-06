@@ -32,7 +32,7 @@ export default function RootLayout() {
   return (
     <ProductProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" />
           <Stack.Screen name="select-product" />

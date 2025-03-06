@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Animated, StyleSheet, View, Text, TouchableOpacity, Easing } from 'react-native';
 import { fetchData } from '@/app/api/product-img/route';
 import { useFonts } from 'expo-font';
@@ -15,127 +15,165 @@ interface ReturnOption {
   price: string;
 }
 
+interface RecommendedAction {
+  action: string;
+  value: number;
+}
+
 interface Product {
-    name: string;
-    id: string;
-    price: number;
-    ordered: string;
-    received: string;
-    condition?: string;
-    estimatedRefundValue?: number;
-    eligibleForResale?: boolean;
-    repairsNeeded?: boolean;
-    recommendedAction?: string;
-  }
-  
+  name: string;
+  id: string;
+  price: number;
+  ordered: string;
+  received: string;
+  condition: string;
+  estimatedRefundValue: number;
+  eligibleForResale: boolean;
+  repairsNeeded: boolean;
+  recommendedAction: RecommendedAction[];
+  recommendedRepair: string;
+}
+
   interface SelectProductProps {
-    product: Product | null;
+    product: Product;
     setProduct: (product: Product) => void;
   }
 
-const AssessmentScreen: React.FC = () => {
-  const { product, setProduct } = useContext(ProductContext);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [assessmentData, setAssessmentData] = useState<any>(null);
-  const textTranslateY = new Animated.Value(0);
-  const buttonOpacity = new Animated.Value(0);
-  const buttonTranslateY = new Animated.Value(0);
-  const router = useRouter();
-  const navigation = useNavigation();
-  const [fontsLoaded] = useFonts({
-    'Shippori-Antique': require('../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
-  });
-
-  // Return options
+  const AssessmentScreen: React.FC = () => {
+    const { product, setProduct } = useContext(ProductContext);
+    const [screenState, setScreenState] = useState('loading');  // Replacing both isLoading and screenState
+    const [assessmentData, setAssessmentData] = useState<any>(null);
+    const textTranslateY = new Animated.Value(0);
+    const buttonOpacity = new Animated.Value(0);
+    const buttonTranslateY = new Animated.Value(0);
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const router = useRouter();
+    const navigation = useNavigation();
+  
+     // Return options
   const returnOptions: ReturnOption[] = [
     { id: 'canada-post', name: 'Canada Post Drop-off', price: '$19.99' },
     { id: 'staples', name: 'Staples', price: 'FREE' },
     { id: 'purolator', name: 'Purolator', price: 'FREE' }
   ];
+
+    // Use refs for animated values
+    const dot1Animation = useRef(new Animated.Value(0)).current;
+    const dot2Animation = useRef(new Animated.Value(0)).current;
+    const dot3Animation = useRef(new Animated.Value(0)).current;
   
-  // Disable the header for this screen
-  useEffect(() => {
-    navigation.setOptions({ headerShown: false });
-  }, [navigation]);
-
-  // Fetch data from the backend
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const fetchedData = await fetchData();
-        setAssessmentData(fetchedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
+    const [fontsLoaded] = useFonts({
+      'Shippori-Antique': require('../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
+    });
+  
     useEffect(() => {
-      console.log('Product in Assessment:', product);
-    }, [product]);
-    
+      navigation.setOptions({ headerShown: false });
+    }, [navigation]);
   
-  // Dot loading animation
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setAssessmentData('Data loaded after 2 seconds');
+        setScreenState('loaded');
+      }, 5000); // 5 seconds for loading data
+  
+      return () => clearTimeout(timer);
+    }, []);
+    
+    // Create interpolated values for the translation
+  const dot1TranslateY = dot1Animation.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0], // Move up 10 pixels then back down
+  });
+  
+  const dot2TranslateY = dot2Animation.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0],
+  });
+  
+  const dot3TranslateY = dot3Animation.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0],
+  });
 
-    Animated.parallel([
-      Animated.timing(textTranslateY, {
-        toValue: -100,
-        duration: 1500,
-        useNativeDriver: true
-      }),
-      Animated.timing(buttonOpacity, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true
-      }),
-      Animated.timing(buttonTranslateY, {
-        toValue: -230,
-        duration: 1500,
-        useNativeDriver: true
-      })
-    ]).start();
-
-    return () => {
-      clearTimeout(loadingTimer);
+    const animateDots = () => {
+      dot1Animation.setValue(0);
+      dot2Animation.setValue(0);
+      dot3Animation.setValue(0);
+  
+      Animated.sequence([
+        Animated.timing(dot1Animation, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot2Animation, {
+          toValue: 1,
+          duration: 600,
+          delay: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dot3Animation, {
+          toValue: 1,
+          duration: 600,
+          delay: 400,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        if (screenState === 'loading') {
+          animateDots();
+        }
+      });
     };
-  }, []);
-
-const handleButtonClick = () => {
-    if (product) {
-      const productToSet = {
-        name: product.name,
-        id: product.id,
-        price: product.price,
-        ordered: product.ordered,
-        received: product.received,
-        condition: assessmentData.condition,
-        estimatedRefundValue: assessmentData.estimatedRefundValue,
-        eligibleForResale: assessmentData.isEligibleToReturn,
-        repairsNeeded: !assessmentData.noRepairsNeeded,
-        recommendedAction: 'HELLO'
-      };
-      setProduct(productToSet);
-      // Use navigation method that matches your _layout.tsx
+    
+    
+    useEffect(() => {
+      if (screenState === 'loading') {
+        animateDots();
+      }
+    }, [screenState]);
+  
+    const handleButtonClick = () => {
       router.push('/barcode');
+    };
+  
+    const handleMenuClick = () => {
+      router.push('/select-product');
+    };
+
+    if (screenState === 'loading' || !assessmentData) {
+      return (
+        <View style={styles.contentContainer}>
+          <FloatingBlobsBackground />
+          <Text style={styles.titleText}>Processing resale</Text>
+          <View style={styles.dotsContainer}>
+            <Animated.Text 
+              style={[
+                styles.dot, 
+                { transform: [{ translateY: dot1TranslateY }] }
+              ]}
+            >
+            </Animated.Text>
+            <Animated.Text 
+              style={[
+                styles.dot, 
+                { transform: [{ translateY: dot2TranslateY }] }
+              ]}
+            >
+            </Animated.Text>
+            <Animated.Text 
+              style={[
+                styles.dot, 
+                { transform: [{ translateY: dot3TranslateY }] }
+              ]}
+            >
+            </Animated.Text>
+          </View>
+        </View>
+      );
     }
-  };
-
-  const handleMenuClick = () => {
-    // Use router.push to navigate to the details page
-    router.push('/select-product');
-  };
-
-  // Render checkmark or x based on condition
-  const renderChecklistIcon = (condition: boolean) => {
+    
+   // Render checkmark or x based on condition
+   const renderChecklistIcon = (condition: boolean) => {
     return condition ? (
       <Text style={styles.checkmarkText}>✓</Text>
     ) : (
@@ -143,21 +181,15 @@ const handleButtonClick = () => {
     );
   };
 
-  // Loading screen with animated dots
-  if (isLoading || !assessmentData) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Assessing product's condition...</Text>
-        <View style={styles.dotContainer}>
-          {[0.3, 0.3, 0.3, 0.3].map((_, index) => (
-            <View 
-              key={index} 
-              style={styles.dot}
-            />
-          ))}
-        </View>
-      </View>
-    );
+  const withinReturnWindow = () => {
+    const today = new Date();
+    if (product) {
+      const receivedDate = new Date(product.received);
+      const diffTime = Math.abs(today.getTime() - receivedDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays <= 30;
+    }
+    return false;
   }
 
   // Render non-returnable product view
@@ -175,32 +207,33 @@ const handleButtonClick = () => {
         <View style={styles.card}>
           <View style={styles.summaryHeader}>
             <View style={styles.summaryHeaderRow}>
-              <Text style={styles.conditionText}>Condition: {assessmentData.condition}</Text>
-              <Text style={styles.valueText}>Estimated Refund Value: ${assessmentData.estimatedRefundValue}</Text>
+              <Text style={styles.conditionText}>Condition: {product ? product.condition : 'N/A'}</Text>
+              {product && <Text style={styles.valueText}>Estimated Refund Value: ${product.estimatedRefundValue}</Text>}
             </View>
           </View>
           
           <View style={styles.checklistContainer}>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.isEligibleToReturn)}
-              <Text style={[styles.checklistItemText, !assessmentData.isEligibleToReturn && styles.ineligibleText]}>
+              {product && renderChecklistIcon(!!product.eligibleForResale)}
+              <Text style={[styles.checklistItemText, product && !product.eligibleForResale && styles.ineligibleText]}>
                 Eligible to return
               </Text>
             </View>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.noRepairsNeeded)}
-              <Text style={[styles.checklistItemText, !assessmentData.noRepairsNeeded && styles.ineligibleText]}>
+              {product && renderChecklistIcon(!product.repairsNeeded)}
+              <Text style={[styles.checklistItemText, product && product.repairsNeeded && styles.ineligibleText]}>
                 No repairs/refurbishments needed
               </Text>
             </View>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.withinReturnWindow)}
-              <Text style={[styles.checklistItemText, !assessmentData.withinReturnWindow && styles.ineligibleText]}>
+              {renderChecklistIcon(withinReturnWindow())}
+              <Text style={[styles.checklistItemText, !withinReturnWindow() && styles.ineligibleText]}>
                 Within 30 days of purchase
               </Text>
             </View>
           </View>
           
+          { product?.condition === 'Salvage' &&
           <View style={styles.nonReturnableReasonContainer}>
             <Text style={styles.nonReturnableTitle}>Why your product cannot be returned?</Text>
             <Text style={styles.nonReturnableDescription}>
@@ -210,7 +243,26 @@ const handleButtonClick = () => {
               Please contact our support customer at 1-234-5678 If you believe this is a mistake
             </Text>
           </View>
+          }
+
+      { !withinReturnWindow &&
+          <View style={styles.nonReturnableReasonContainer}>
+            <Text style={styles.nonReturnableTitle}>Why your product cannot be returned?</Text>
+            <Text style={styles.nonReturnableDescription}>
+            We are unable to process returns for items that are outside of the 30-day return window.
+            </Text>
+            <Text style={styles.disclaimerText}>
+              Please contact our support customer at 1-234-5678 If you believe this is a mistake
+            </Text>
+          </View>
+          }
         </View>
+        <TouchableOpacity 
+              style={styles.continueButtonNonReturnable} 
+              onPress={() => router.push('/')}
+            >
+              <Text style={styles.continueText}>Back to Home</Text>
+            </TouchableOpacity>
       </View>
     );
   };
@@ -230,27 +282,27 @@ const handleButtonClick = () => {
         <View style={styles.card}>
           <View style={styles.summaryHeader}>
             <View style={styles.summaryHeaderRow}>
-              <Text style={styles.conditionText}>Condition: {assessmentData.condition}</Text>
-              <Text style={styles.valueText}>Estimated Refund Value: ${assessmentData.estimatedRefundValue}</Text>
+              <Text style={styles.conditionText}>Condition: {product ? product.condition : 'N/A'}</Text>
+              {product && <Text style={styles.valueText}>Estimated Refund Value: ${product.estimatedRefundValue}</Text>}
             </View>
           </View>
           
           <View style={styles.checklistContainer}>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.isEligibleToReturn)}
-              <Text style={[styles.checklistItemText, !assessmentData.isEligibleToReturn && styles.ineligibleText]}>
+              {product && renderChecklistIcon(!!product.eligibleForResale)}
+              <Text style={[styles.checklistItemText, product && !product.eligibleForResale && styles.ineligibleText]}>
                 Eligible to return
               </Text>
             </View>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.noRepairsNeeded)}
-              <Text style={[styles.checklistItemText, !assessmentData.noRepairsNeeded && styles.ineligibleText]}>
+              {product && renderChecklistIcon(!product.repairsNeeded)}
+              <Text style={[styles.checklistItemText, product && product.repairsNeeded && styles.ineligibleText]}>
                 No repairs/refurbishments needed
               </Text>
             </View>
             <View style={styles.checklistItem}>
-              {renderChecklistIcon(assessmentData.withinReturnWindow)}
-              <Text style={[styles.checklistItemText, !assessmentData.withinReturnWindow && styles.ineligibleText]}>
+              {renderChecklistIcon(withinReturnWindow())}
+              <Text style={[styles.checklistItemText, !withinReturnWindow() && styles.ineligibleText]}>
                 Within 30 days of purchase
               </Text>
             </View>
@@ -293,10 +345,14 @@ const handleButtonClick = () => {
   };
 
   // Decide which view to render based on condition and eligibility
-  return (assessmentData.condition === 'Salvage' || !assessmentData.isEligibleToReturn) 
+return (
+  !product?.eligibleForResale || 
+  !withinReturnWindow() || 
+  product.condition === 'Salvage' 
     ? renderNonReturnableView() 
-    : renderReturnOptionsView();
-};
+    : renderReturnOptionsView()
+);
+}
 
 const styles = StyleSheet.create({
   loadingContainer: {
@@ -314,15 +370,25 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 50,
   },
-  dotContainer: {
-    flexDirection: 'row'
-  },
   dot: {
     width: 10,
     height: 10,
     borderRadius: 5,
     backgroundColor: 'gray',
     marginHorizontal: 5
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: '500',
+    color: 'black',
+    marginBottom: 10,
+    fontFamily: 'Shippori-Antique',
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+    height: 30, // Fixed height to prevent layout shifts during animation
+    alignItems: 'center',
   },
   container: {
     flex: 1,
@@ -436,6 +502,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
   },
+  continueButtonNonReturnable: {
+    backgroundColor: 'black',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: 50,
+    right: 50,
+  },
   continueText: {
     color: 'white',
     fontSize: 16,
@@ -464,6 +539,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'red',
     fontStyle: 'italic',
+  },
+  contentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 300,
   },
 });
 
