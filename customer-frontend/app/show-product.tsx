@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
 import FloatingBlobsBackground from '@/app/components/background-blur';
 import { ProductContext } from '@/app/productContext';
+import { useAssessmentContext, AssessmentProvider } from './AssessmentContext';
 
 // Define the structure for our photos
 interface PhotoItem {
@@ -43,6 +44,7 @@ interface SelectProductProps {
 }
 
 const ShowProduct: React.FC = () => {
+  const { addImage, removeImages } = useAssessmentContext();
   const { product, setProduct } = useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -144,8 +146,8 @@ const ShowProduct: React.FC = () => {
   const handleSubmit = async () => {
     try {
       // Navigate with query parameters
-      router.push('/assessment');
-  
+      
+      // setMessage('Please wait for your images to be processed...');
       const formData = new FormData();
   
       // Add photos to form data
@@ -164,11 +166,11 @@ const ShowProduct: React.FC = () => {
       formData.append('price', product?.price.toString() || '');
       
       // Send request without manually setting Content-Type
-      const response = await fetch('http://192.168.68.70:5000/api/data', {
+      const response = await fetch('http://192.168.0.207:5000/api/data', {
         method: 'POST',
         body: formData,
       });
-  
+      
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
@@ -221,7 +223,14 @@ const ShowProduct: React.FC = () => {
       }
 
       // Logging for debugging
-      console.log('Data sent successfully:', data);
+      // Extract images safely
+      removeImages();
+      if (data?.images && Array.isArray(data.images)) {
+        data.images.forEach((image: string) => addImage(image));
+      }
+      router.push('/assessment');
+
+      // Optionally, you can also store a loading state
   
     } catch (error) {
       console.error('Error sending data:', error);
@@ -232,7 +241,9 @@ const ShowProduct: React.FC = () => {
   const goNext = () => {
     router.push({
       pathname: '/assessment',
-      params: { product: JSON.stringify(product) },
+      params: { 
+        product: JSON.stringify(product)
+      },
     });
   };
 
