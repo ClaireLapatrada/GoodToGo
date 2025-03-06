@@ -10,6 +10,11 @@ import { useNavigation } from '@react-navigation/native';
 import ProductCard from './components/product-card';
 import { ProductContext } from '@/app/productContext';
 
+interface RecommendedAction {
+  action: string;
+  value: number;
+}
+
 interface Product {
   name: string;
   id: string;
@@ -20,7 +25,8 @@ interface Product {
   estimatedRefundValue?: number;
   eligibleForResale?: boolean;
   repairsNeeded?: boolean;
-  recommendedAction?: string;
+  recommendedAction?: RecommendedAction[];
+  recommendedRepair?: string;
 }
 
 interface SelectProductProps {
@@ -78,9 +84,9 @@ const handleButtonClick = () => {
   }
 
   const products = [
-    { name: "Product A", id: "123", size: "M", color: "Black", price: 99.99, ordered: "2024-03-05", received: "2024-03-05"},
-    { name: "Product B", id: "456", size: "L", color: "White", price: 199.99, ordered: "2024-03-05", received: "2024-03-05"},
-    { name: "Product C", id: "789", size: "S", color: "Red", price: 299.99, ordered: "2024-03-05", received: "2024-03-05"},
+    { name: "Product A", id: "123", size: "M", color: "Black", price: 99.99, ordered: "2025-03-05", received: "2025-03-05"},
+    { name: "Product B", id: "456", size: "L", color: "White", price: 199.99, ordered: "2025-03-05", received: "2025-03-05"},
+    { name: "Product C", id: "789", size: "S", color: "Red", price: 299.99, ordered: "2025-03-05", received: "2025-03-05"},
   ];
 
   return (

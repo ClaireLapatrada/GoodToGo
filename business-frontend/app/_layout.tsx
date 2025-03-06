@@ -34,7 +34,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" />
           <Stack.Screen name="scan-product" />
-          <Stack.Screen name="product-details" />
+          <Stack.Screen name="resale-processed" />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

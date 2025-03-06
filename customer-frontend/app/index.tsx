@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Animated, StyleSheet, View, Text, TouchableOpacity, Easing } from 'react-native';
-import { fetchData } from '@/app/api/product-img/route';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import FloatingBlobsBackground from '@/app/components/background-blur';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function Home() {
   const [message, setMessage] = useState<string | null>(null);
@@ -26,20 +26,9 @@ export default function Home() {
     router.push('/select-product');
   };
 
-  useEffect(() => {
-    const getMessage = async () => {
-      try {
-        const data = await fetchData();
-        setMessage(data);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getMessage();
-  }, []);
+  const handleMenuClick = () => {
+    router.push('/')
+  }
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -75,7 +64,7 @@ export default function Home() {
 
   const moveButtonUp = () => {
     Animated.timing(buttonTranslateY, {
-      toValue: -50, // Adjusted to a smaller value
+      toValue: -80, // Adjusted to a smaller value
       duration: 1500,
       easing: Easing.ease,
       useNativeDriver: true,
@@ -93,47 +82,58 @@ export default function Home() {
       >
         Your item is Good to Go?
       </Animated.Text>
-      <TouchableOpacity style={styles.button} onPress={handleButtonClick}>
-          <Text style={styles.buttonText}>Return item</Text>
-        </TouchableOpacity>
-      {/* <Animated.View
+      <Animated.View
         style={[
           styles.buttonContainer,
           { opacity: buttonOpacity, transform: [{ translateY: buttonTranslateY }] },
         ]}
       >
         <TouchableOpacity style={styles.button} onPress={handleButtonClick}>
-          <Text style={styles.buttonText}>Return item</Text>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
-      </Animated.View> */}
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    color: 'black',
-    marginBottom: 20, // Add margin to separate text and button
-  },
-  buttonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'black',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-  },
-});
+    pageContainer: {
+      flex: 1,
+      justifyContent: 'center', // Center content vertically
+      alignItems: 'center', // Center items horizontally
+      paddingHorizontal: 50,
+    },
+    adminText: {
+    position: 'absolute',
+      top: 70, // Adjust top spacing
+      right: 50, // Align to the left
+    },
+    menuButton: {
+      position: 'absolute',
+      top: 70, // Adjust top spacing
+      left: 50, // Align to the left
+    },
+    text: {
+      fontSize: 24,
+      color: 'black',
+      marginBottom: 20,
+      alignSelf: 'flex-start',
+
+    },
+    buttonContainer: {
+      alignSelf: 'center', // Align button to the left
+    },
+    button: {
+      backgroundColor: 'black',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 18,
+      textAlign: 'center',
+    },
+  });
+  
+  

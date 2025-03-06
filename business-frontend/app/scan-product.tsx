@@ -13,15 +13,15 @@ interface Product {
   price: number;
   ordered: string;
   received: string;
-  condition: string;
-  estimatedRefundValue: number;
-  eligibleForResale: boolean;
-  repairsNeeded: boolean;
-  recommendedAction: string;
-  actionOptions?: Array<{
+  condition?: string;
+  estimatedRefundValue?: number;
+  eligibleForResale?: boolean;
+  repairsNeeded?: boolean;
+  recommendedAction?: Array<{
     action: string;
     value: number;
   }>;
+  recommendedRepair?: string;
 }
 
 export default function ScanProduct() {
@@ -29,6 +29,7 @@ export default function ScanProduct() {
   const [product, setProductState] = useState<any>(null);
   const [isCameraActive, setIsCameraActive] = useState(true); // Control camera state
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [recommendedActions, setRecommendedActions] = useState<any>(null);
   const navigation = useNavigation();
   const router = useRouter();
   const [fontsLoaded] = useFonts({
@@ -50,29 +51,54 @@ export default function ScanProduct() {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  function setProduct(productData: any) {
-    setProductState(productData);
+  interface Action {
+    number: number;
+    value: number;
   }
-
+  
+  const actionMapping: { [key: number]: string } = {
+    1: "Resell to online platform",
+    2: "Auction to marketplace",
+    3: "Go to SALE section",
+    4: "Send to recycle",
+    5: "Send to landfill"
+  };
+  
+  const parseActionsString = (actionsString: string) => {
+    if (!actionsString) {
+      console.warn("No actions string provided.");
+      return [];
+    }
+  
+    return actionsString.split('|').map((actionValue) => {
+      const [actionNumber, value] = actionValue.split(',');
+  
+      return {
+        action: actionMapping[parseInt(actionNumber, 10)],
+        value: parseFloat(value) // Use parseFloat for decimal values
+      };
+    });
+  };
+  
   const handleBarcodeScan = ({ data }: { data: string }) => {
     try {
       const parsedData = JSON.parse(data);
-      // Add mock action options if they don't exist in the scanned data
-      if (!parsedData.actionOptions) {
-        parsedData.actionOptions = [
-          { action: "Resell to online platform", value: 140 },
-          { action: "Auction to marketplace", value: 125 },
-          { action: "Go to SALE section", value: 75 },
-          { action: "Send to landfill", value: 0 },
-        ];
-      }
+      console.log("Parsed data:", parsedData);
+      // Use the correct property name: recommendedAction
+      const recommendedActions = parseActionsString(parsedData.recommendedAction);
+      
+      console.log("Parsed Rec:", recommendedActions);
+  
       setScannedData(parsedData);
-      setSelectedAction(parsedData.actionOptions[0].action); // Select first option by default
+      setSelectedAction(recommendedActions[0].action); // Select first option by default
+      setRecommendedActions(recommendedActions);
+
       setIsCameraActive(false);
     } catch (error) {
       console.error("Error parsing scanned data:", error);
     }
   };
+  
 
   useEffect(() => {
     if (scannedData) {
@@ -89,7 +115,6 @@ export default function ScanProduct() {
       <Text style={styles.xmarkText}>✗</Text>
     );
   };
-
   return (
     <View style={styles.container}>
       <FloatingBlobsBackground />
@@ -147,7 +172,7 @@ export default function ScanProduct() {
 
               <View style={styles.checklistSection}>
                 <View style={styles.checklistItem}>
-                  {renderChecklistIcon(scannedData.eligibleForResale)}
+                  {renderChecklistIcon(!!scannedData.eligibleForResale)}
                   <Text style={styles.checklistText}>Eligible for resale</Text>
                 </View>
                 <View style={styles.checklistItem}>
@@ -160,32 +185,32 @@ export default function ScanProduct() {
             <Text style={styles.sectionTitle}>Recommended action</Text>
 
             <View style={styles.actionCard}>
-              {scannedData.actionOptions?.map((option, index) => (
+                {recommendedActions.map((option: { action: string; value: number }, index: number) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.actionOption}
                   onPress={() => setSelectedAction(option.action)}
                 >
                   <View style={styles.radioRow}>
-                    <View
-                      style={[
-                        styles.radioButton,
-                        selectedAction === option.action && styles.radioButtonSelected,
-                      ]}
-                    >
-                      {selectedAction === option.action && <View style={styles.radioButtonInner} />}
-                    </View>
-                    <Text style={styles.actionText}>{option.action}</Text>
-                    <Text style={styles.actionValue}>${option.value}</Text>
+                  <View
+                    style={[
+                    styles.radioButton,
+                    selectedAction === option.action && styles.radioButtonSelected,
+                    ]}
+                  >
+                    {selectedAction === option.action && <View style={styles.radioButtonInner} />}
+                  </View>
+                  <Text style={styles.actionText}>{option.action}</Text>
+                  <Text style={styles.actionValue}>${option.value}</Text>
                   </View>
                 </TouchableOpacity>
-              ))}
+                ))}
             </View>
             {scannedData.repairsNeeded && (
                 <>
                     <Text style={styles.sectionTitle}>Recommended repair steps</Text>
                     <View style={styles.repairCard}>
-                    <Text style={styles.actionText}>{scannedData.recommendedAction}</Text>
+                    <Text style={styles.actionText}>{scannedData.recommendedRepair}</Text>
                     </View>
                 </>
                 )}
@@ -320,7 +345,7 @@ const styles = StyleSheet.create({
     fontFamily: "Shippori-Antique",
   },
   conditionValue: {
-    fontSize: 16,
+    fontSize: 14,
     flex: 1,
   },
   infoIcon: {
