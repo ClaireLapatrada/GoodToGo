@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import os
-from functions import condition_grading  # Import the condition_grading function
+from functions import condition_grading, recommended_action, recommended_repair  # Import all functions
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
@@ -37,26 +37,32 @@ def init_routes(app):
             if 'photos' not in request.files:
                 return jsonify({"message": "No photos part in the request"}), 400
 
-            # photos = request.files.getlist('photos')
+            photos = request.files.getlist('photos')
 
-            # # Save the photos
-            # for index, photo in enumerate(photos):
-            #     if photo and allowed_file(photo.filename):
-            #         filename = f"photo_{index + 1}.jpg"
-            #         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            #         photo.save(filepath)
-            #         saved_photos.append(filepath)
+            # Save the photos
+            for index, photo in enumerate(photos):
+                if photo and allowed_file(photo.filename):
+                    filename = f"photo_{index + 1}.jpg"
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    photo.save(filepath)
+                    saved_photos.append(filepath)
 
             print('Received photos:', saved_photos)
             print('Received price:', price)
 
             # Call the condition_grading function with the saved photo paths and price
             grading_result = condition_grading(price)
+            # Call the recommended_action function with the price
+            action_result = recommended_action(price)
+            # Call the recommended_repair function
+            repair_result = recommended_repair()
 
-            # Return the grading results as a response
+            # Return the grading results, recommended action, and recommended repair as a response
             return jsonify({
                 "message": "Data received and photos uploaded successfully!",
-                "grading_result": grading_result
+                "grading_result": grading_result,
+                "recommended_action": action_result,
+                "recommended_repair": repair_result
             }), 200
 
         except Exception as e:
