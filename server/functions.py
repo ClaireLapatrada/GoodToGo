@@ -83,7 +83,7 @@ def recommended_repair():
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="***REMOVED***")
+        genai.configure(api_key="")
 
         prompt = (
             f"Analyze the following images and identify if repair is needed and if so, the repair actions needed to restore the product to a functional state. "

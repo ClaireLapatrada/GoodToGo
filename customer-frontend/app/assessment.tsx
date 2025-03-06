@@ -8,6 +8,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import { ProductContext } from '@/app/productContext';
+import { useAssessmentContext } from './AssessmentContext';
+import { useLocalSearchParams } from 'expo-router';
+import { Image, ScrollView } from 'react-native';
+import Gallery from './Gallery';
+
 
 interface ReturnOption {
   id: string;
@@ -42,7 +47,8 @@ interface Product {
 
   const AssessmentScreen: React.FC = () => {
     const { product, setProduct } = useContext(ProductContext);
-    const [screenState, setScreenState] = useState('loading');  // Replacing both isLoading and screenState
+    const { images } = useAssessmentContext();
+  const [screenState, setScreenState] = useState('loading');  // Replacing both isLoading and screenState
     const [assessmentData, setAssessmentData] = useState<any>(null);
     const textTranslateY = new Animated.Value(0);
     const buttonOpacity = new Animated.Value(0);
@@ -205,6 +211,7 @@ interface Product {
         </View>
         <Text style={styles.headerText}>Assessment Summary</Text>
 
+
         <View style={styles.card}>
           <View style={styles.summaryHeader}>
             <View style={styles.summaryHeaderRow}>
@@ -293,7 +300,7 @@ interface Product {
               {product && <Text style={styles.valueText}>Estimated Refund Value: ${product.estimatedRefundValue}</Text>}
             </View>
           </View>
-          
+          <Gallery/>
           <View style={styles.checklistContainer}>
             <View style={styles.checklistItem}>
               {product && renderChecklistIcon(!!product.eligibleForResale)}
