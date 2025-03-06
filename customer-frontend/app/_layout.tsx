@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ProductProvider } from '@/app/productContext';
+import AssessmentProvider from './AssessmentContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,6 +31,7 @@ export default function RootLayout() {
   }
 
   return (
+    <AssessmentProvider>
     <ProductProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
@@ -46,5 +48,6 @@ export default function RootLayout() {
         <StatusBar style="auto" />
       </ThemeProvider>
     </ProductProvider>
+    </AssessmentProvider>
   );
 }
