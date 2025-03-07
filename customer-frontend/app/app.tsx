@@ -22,6 +22,7 @@ interface Product {
     eligibleForResale?: boolean;
     repairsNeeded?: boolean;
     recommendedAction?: string;
+    isWardrobing?: boolean;
   }
 
 const Stack = createStackNavigator();
