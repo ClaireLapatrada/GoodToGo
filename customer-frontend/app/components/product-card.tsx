@@ -1,8 +1,9 @@
+// components/product-card.tsx
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 interface ProductCardProps {
-  imageUri: string;
+  imageUri: any;
   name: string;
   color: string;
   size: string;
@@ -10,10 +11,10 @@ interface ProductCardProps {
   ordered: string;
   received: string;
   price: string;
-  isSelected?: boolean;
+  isSelected: boolean;
 }
 
-export default function ProductCard({
+const ProductCard: React.FC<ProductCardProps> = ({
   imageUri,
   name,
   color,
@@ -22,70 +23,82 @@ export default function ProductCard({
   ordered,
   received,
   price,
-  isSelected = false,
-}: ProductCardProps) {
+  isSelected,
+}) => {
   return (
     <View style={[styles.card, isSelected && styles.selectedCard]}>
-      <Image source={{ uri: imageUri || 'https://via.placeholder.com/100' }} style={styles.image} />
-      <Text style={[styles.price, { fontFamily: 'Shippori-Antique' }]}>${price}</Text>
-      <View style={styles.details}>
-        <Text style={[styles.name, { fontFamily: 'Shippori-Antique' }]}>{name}</Text>
-        <Text style={[styles.info]}>Color: {color}</Text>
-        <Text style={[styles.info]}>Size: {size}</Text>
-        <Text style={[styles.info]}>Order ID: {orderID}</Text>
-        <Text style={[styles.info]}>Ordered: {ordered}</Text>
-        <Text style={[styles.info]}>Received: {received}</Text>
+      <View style={styles.imageContainer}>
+        <Image 
+          source={imageUri} 
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.details}>Color: {color}</Text>
+        <Text style={styles.details}>Size: {size}</Text>
+        <Text style={styles.details}>Order ID: {orderID}</Text>
+        <Text style={styles.details}>Ordered: {ordered}</Text>
+        <Text style={styles.details}>Received: {received}</Text>
+        <Text style={styles.price}>${price}</Text>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    padding: 10,
-    width: 300,
-    height: 120,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 2,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   selectedCard: {
-    borderWidth: 1,
-    borderColor: 'black',
+    borderColor: '#000',
   },
-  image: {
+  imageContainer: {
     width: 80,
     height: 80,
-    borderRadius: 20,
-    marginRight: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginRight: 15,
   },
-  details: {
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  infoContainer: {
     flex: 1,
-    position: 'relative',
-    left: 40,
+    justifyContent: 'center',
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 3,
+    marginBottom: 5,
+    fontFamily: 'Shippori-Antique',
   },
-  info: {
+  details: {
     fontSize: 12,
-    color: '#555',
+    color: '#666',
+    marginBottom: 2,
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    marginTop: 5,
     position: 'absolute',
-    left: 20,
-    bottom: 15,
+    left: -93,
+    bottom: 0,
   },
 });
+
+export default ProductCard;

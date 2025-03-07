@@ -105,13 +105,13 @@ def recommended_repair():
     except Exception as e:
         return f"Error: Unable to recommend a repair action for the images. Details: {str(e)}"
 
-# def wardrobe_detection():
+# def receipt_ocr():
 #     """Detects text in the file."""
 #     from google.cloud import vision
 
 #     client = vision.ImageAnnotatorClient()
 
-#     with open("uploads/photo_6.JPG", "rb") as image_file:
+#     with open("uploads/photo_6.jpg", "rb") as image_file:
 #         content = image_file.read()
 
 #     image = vision.Image(content=content)
@@ -119,12 +119,20 @@ def recommended_repair():
 #     response = client.text_detection(image=image)
 #     texts = response.text_annotations
 
-#     print("Texts:")
-
 #     if response.error.message:
 #         raise Exception(
 #             "{}\nFor more info on error messages, check: "
 #             "https://cloud.google.com/apis/design/errors".format(response.error.message)
 #         )
 
-#     return texts
+#     return ' '.join([text.description for text in texts])
+
+# def check_valid_receipt(order_id):
+#     try:
+#         text = receipt_ocr()
+#         if order_id in text:
+#             return "Valid receipt detected."
+#         else:
+#             return "Invalid receipt detected."
+#     except Exception as e:
+#         return f"Error: Unable to process the receipt. Details: {str(e)}"

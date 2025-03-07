@@ -15,7 +15,6 @@ interface RecommendedAction {
   value: number;
 }
 
-
 interface Product {
   name: string;
   id: string;
@@ -28,7 +27,9 @@ interface Product {
   repairsNeeded?: boolean;
   recommendedAction?: string;
   isWardrobing?: boolean;
-  image1?: string;
+  image?: any;
+  size?: string;
+  color?: string;
 }
 
 interface SelectProductProps {
@@ -46,21 +47,19 @@ const SelectProduct: React.FC = () => {
     'Shippori-Antique': require('../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
   });
 
-// SelectProduct.tsx
-const handleButtonClick = () => {
-  if (selectedProduct) {
-    const productToSet = {
-      name: selectedProduct.name,
-      id: selectedProduct.id,
-      price: selectedProduct.price,
-      ordered: selectedProduct.ordered,
-      received: selectedProduct.received,
-    };
-    setProduct(productToSet);
-    // Use navigation method that matches your _layout.tsx
-    router.push('/show-product');
-  }
-};
+  const handleButtonClick = () => {
+    if (selectedProduct) {
+      const productToSet = {
+        name: selectedProduct.name,
+        id: selectedProduct.id,
+        price: selectedProduct.price,
+        ordered: selectedProduct.ordered,
+        received: selectedProduct.received,
+      };
+      setProduct(productToSet);
+      router.push('/show-product');
+    }
+  };
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -85,10 +84,38 @@ const handleButtonClick = () => {
     return <AppLoading />;
   }
 
+  // Fixed product definitions with proper image handling
   const products = [
-    { name: "Product A", id: "123", size: "M", color: "Black", price: 99.99, ordered: "2025-03-05", received: "2025-03-05"},
-    { name: "Product B", id: "456", size: "L", color: "White", price: 199.99, ordered: "2025-03-05", received: "2025-03-05"},
-    { name: "Product C", id: "789", size: "S", color: "Red", price: 299.99, ordered: "2025-03-05", received: "2025-03-05"},
+    { 
+      name: "Product A", 
+      id: "123", 
+      size: "M", 
+      color: "Black", 
+      price: 99.99, 
+      ordered: "2025-03-05", 
+      received: "2025-03-05", 
+      image: require('../assets/images/blacktshirt.png')
+    },
+    { 
+      name: "Product B", 
+      id: "456", 
+      size: "L", 
+      color: "White", 
+      price: 199.99, 
+      ordered: "2025-03-05", 
+      received: "2025-03-05", 
+      image: require('../assets/images/aj1.png')
+    },
+    { 
+      name: "Product C", 
+      id: "789", 
+      size: "S", 
+      color: "Red", 
+      price: 299.99, 
+      ordered: "2025-03-05", 
+      received: "2025-03-05", 
+      image: require('../assets/images/nikewhite.png')
+    },
   ];
 
   return (
@@ -99,19 +126,19 @@ const handleButtonClick = () => {
 
       <ScrollView style={styles.cardContainer}>
         {products.map((product, index) => (
-            <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
+          <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
             <ProductCard
-              imageUri=""
+              imageUri={product.image}
               name={product.name}
-              color={product.color}
-              size={product.size}
+              color={product.color || ""}
+              size={product.size || ""}
               orderID={product.id}
               ordered={product.ordered}
               received={product.received}
               price={product.price.toString()}
               isSelected={selectedProduct?.name === product.name}
             />
-            </TouchableOpacity>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
@@ -134,7 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    paddingLeft: 50,
+    paddingHorizontal: 50,
   },
   text: {
     fontSize: 22,

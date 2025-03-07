@@ -5,6 +5,7 @@ import FloatingBlobsBackground from '@/app/components/background-blur';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function RefundStatus() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function RefundStatus() {
   ];
 
   return (
-    <View style={styles.pageContainer}>
+    <ScrollView contentContainerStyle={styles.pageContainer}>
       <FloatingBlobsBackground />
       
       {/* Menu and Refresh Icons */}
@@ -44,6 +45,7 @@ export default function RefundStatus() {
       {/* Status Text */}
       <Text style={styles.title}>Your refund process has been initiated</Text>
       
+      {/* Progress Steps */}
       <View style={styles.progressContainer}>
         {steps.map((step, index) => (
           <View key={index} style={styles.stepContainer}>
@@ -53,19 +55,19 @@ export default function RefundStatus() {
           </View>
         ))}
       </View>
-
+  
       {/* Continue Button */}
       <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   pageContainer: {
     paddingHorizontal: 50,
-    paddingVertical: 70,
+    paddingVertical: 150,
     justifyContent: 'center',
     backgroundColor: 'white',
   },
@@ -121,13 +123,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Shippori-Antique',
   },
   continueButton: {
-    position: 'absolute',
-    bottom: -170,
-    right: 50,
+    alignSelf: 'center', // Center horizontally
+    marginTop: 30, // Add spacing from the progress tracker
     backgroundColor: 'black',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
   },
   buttonText: {
     color: 'white',
