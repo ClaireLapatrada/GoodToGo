@@ -22,6 +22,7 @@ interface Product {
     value: number;
   }>;
   recommendedRepair?: string;
+  image1: string;
 }
 
 export default function ScanProduct() {
@@ -145,7 +146,12 @@ export default function ScanProduct() {
             <View style={styles.productCard}>
               <View style={styles.productHeader}>
               <View style={styles.productImageContainer}>
-                <View style={styles.productImage} />
+              <View style={styles.productImage}>
+                <Image 
+                  source={{ uri: scannedData.image1 }} // Replace with your server's URL
+                  style={styles.imageStyle} // Add a style for the image if needed
+                />
+              </View>
               </View>
               <View style={styles.productInfo}>
                 <Text style={styles.productName}>{scannedData.name}</Text>
@@ -496,4 +502,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 16
   },
+  imageStyle: {
+    width: 80, // Set desired width
+    height: 80, // Set desired height
+    resizeMode: 'cover', // To make sure the image scales correctly
+    borderRadius: 10, // Rounded corners
+  }
 });

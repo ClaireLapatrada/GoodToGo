@@ -19,6 +19,7 @@ interface Product {
   recommendedAction?: RecommendedAction[];
   recommendedRepair?: string;
   isWardrobing?: boolean;
+  image1?: string | null;
 }
 
 interface ProductContextType {
