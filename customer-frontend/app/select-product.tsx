@@ -28,6 +28,7 @@ interface Product {
   repairsNeeded?: boolean;
   recommendedAction?: string;
   isWardrobing?: boolean;
+  image1?: string;
 }
 
 interface SelectProductProps {

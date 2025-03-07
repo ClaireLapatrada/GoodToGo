@@ -202,7 +202,7 @@ interface Product {
   // Render non-returnable product view
   const renderNonReturnableView = () => {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <FloatingBlobsBackground />
         <View style={styles.header}>
           <TouchableOpacity>
@@ -219,7 +219,7 @@ interface Product {
               {product && <Text style={styles.valueText}>Estimated Refund Value: ${product.estimatedRefundValue}</Text>}
             </View>
           </View>
-          
+          <Gallery/>
           <View style={styles.checklistContainer}>
             <View style={styles.checklistItem}>
               {product && renderChecklistIcon(!!product.eligibleForResale)}
@@ -247,7 +247,7 @@ interface Product {
             </View>
           </View>
           
-          { product?.condition === 'Salvage' &&
+          { (product?.condition === 'Salvage' || !product?.eligibleForResale) &&
           <View style={styles.nonReturnableReasonContainer}>
             <Text style={styles.nonReturnableTitle}>Why your product cannot be returned?</Text>
             <Text style={styles.nonReturnableDescription}>
@@ -271,20 +271,25 @@ interface Product {
           </View>
           }
         </View>
-        <TouchableOpacity 
-              style={styles.continueButtonNonReturnable} 
-              onPress={() => router.push('/')}
+        <View style={styles.selectedContainer}>
+            <Text style={styles.selectedText}>
+              {returnOptions.find(option => option.id === selectedOption)?.name}
+            </Text>
+            <TouchableOpacity 
+              style={styles.continueButton} 
+              onPress={handleButtonClick}
             >
               <Text style={styles.continueText}>Back to Home</Text>
             </TouchableOpacity>
-      </View>
+          </View>
+      </ScrollView>
     );
   };
 
   // Assessment summary with return options
   const renderReturnOptionsView = () => {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <FloatingBlobsBackground />
         <View style={styles.header}>
           <TouchableOpacity>
@@ -360,7 +365,7 @@ interface Product {
             </TouchableOpacity>
           </View>
         )}
-      </View>
+      </ScrollView>
     );
   };
 
@@ -417,7 +422,8 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     borderRadius: 10,
-    padding: 50
+    padding: 50,
+    paddingBottom: 120,
   },
   headerText: {
     fontSize: 22,
@@ -528,8 +534,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
     position: 'absolute',
-    bottom: 50,
-    right: 50,
+    bottom: 50, // 50px from the bottom
+    right: 50, // 50px from the right
   },
   continueText: {
     color: 'white',

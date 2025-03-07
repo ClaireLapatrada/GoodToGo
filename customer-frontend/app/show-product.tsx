@@ -36,6 +36,8 @@ interface RecommendedAction {
     repairsNeeded?: boolean;
     recommendedAction?: RecommendedAction[];
     recommendedRepair?: string;
+    isWardrobing?: boolean;
+    image1?: string | null;
   }
 
 interface SelectProductProps {
@@ -157,6 +159,7 @@ const ShowProduct: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
+      router.push('/assessment');
       // Navigate with query parameters
       
       // setMessage('Please wait for your images to be processed...');
@@ -179,7 +182,7 @@ const ShowProduct: React.FC = () => {
       formData.append('userData', JSON.stringify(userData));
       
       // Send request without manually setting Content-Type
-      const response = await fetch('http://192.168.0.207:5000/api/data', {
+      const response = await fetch('http://192.168.68.70:5000/api/data', {
         method: 'POST',
         body: formData,
       });
@@ -197,8 +200,8 @@ const ShowProduct: React.FC = () => {
       console.log("Extracted data:", condition, estimatedRefundValue);
       // Set default eligibility for return
       let isEligibleToReturn = true;
-      if (product && estimatedRefundValue < product.price * 0.5) {
-        isEligibleToReturn = false; // Mark as ineligible for return if value is less than 50% of original price
+      if (product && estimatedRefundValue < product.price * 0.3) {
+        isEligibleToReturn = false; // Mark as ineligible for return if value is less than 30% of original price, based on business policy
       }
       
       // Extracting recommended repair (if any)
@@ -235,6 +238,7 @@ const ShowProduct: React.FC = () => {
           recommendedAction: recommendedActionStr,
           recommendedRepair: recommendedRepair,
           isWardrobing: isWardrobing,
+          image1: photosList[0].uri,
         };
         setProduct(productToSet);
       }
@@ -245,7 +249,6 @@ const ShowProduct: React.FC = () => {
       if (data?.images && Array.isArray(data.images)) {
         data.images.forEach((image: string) => addImage(image));
       }
-      router.push('/assessment');
 
       // Optionally, you can also store a loading state
   

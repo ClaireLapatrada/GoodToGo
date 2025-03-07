@@ -13,7 +13,7 @@ def condition_grading(price="100"):
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="***REMOVED***")
+        genai.configure(api_key="")
 
         # Define the prompt
         prompt = (
@@ -47,7 +47,7 @@ def recommended_action(price="100"):
         pil_image5 = PIL.Image.open("uploads/photo_5.jpg")
 
         # Configure the Gemini API with your key
-        genai.configure(api_key="***REMOVED***")
+        genai.configure(api_key="")
 
         prompt = (
             f"Analyze the following images and assess their physical condition based on visible wear, damage, or missing parts. "
