@@ -78,6 +78,8 @@ def init_routes(app):
                     photo.save(filepath)
                     saved_photos.append(filepath)
 
+            
+            detect_defects(model_dict, filenames, "")
             print('Received photos:', saved_photos)
             print('Received price:', price)
 
@@ -87,6 +89,7 @@ def init_routes(app):
                     encoded_img = base64.b64encode(img_data).decode('utf-8')
                     # Just add the raw encoded image string to the array
                     encoded_images.append(encoded_img)
+
 
             # Ensure all results are JSON serializable by converting NumPy types
             grading_result = int(condition_grading(price)) if isinstance(condition_grading(price), np.integer) else condition_grading(price)
@@ -115,4 +118,4 @@ app = Flask(__name__)
 init_routes(app)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='192.168.68.70', port = 5000)
+    app.run(debug=True, host='10.0.0.172', port = 5000)
