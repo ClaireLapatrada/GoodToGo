@@ -113,12 +113,14 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   whiteBackground: {
-    position: 'absolute',  // Position the white background at the back
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#f4f1e9', // Set background color to white
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#f4f1e9', // Replace with your blob animation or gradient
   },
   blob1: {
     position: 'absolute',

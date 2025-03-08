@@ -2,15 +2,12 @@ import random
 import numpy as np
 import pandas as pd
 from faker import Faker
-from fastapi import FastAPI
-from pydantic import BaseModel
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import ipaddress
 
 fake = Faker()
-app = FastAPI()
 
 HIGH_RISK_IP_RANGES = [
     ("192.168.1.0", "192.168.1.255"),  # Example local network

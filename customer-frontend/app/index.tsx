@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, StyleSheet, View, Text, TouchableOpacity, Easing } from 'react-native';
+import { Animated, StyleSheet, View, Text, TouchableOpacity, Easing, Image } from 'react-native';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import FloatingBlobsBackground from '@/app/components/background-blur';
@@ -74,6 +74,7 @@ export default function Home() {
   return (
     <View style={styles.pageContainer}>
       <FloatingBlobsBackground />
+      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
       <Animated.Text
         style={[
           styles.text,
@@ -99,14 +100,8 @@ export default function Home() {
 const styles = StyleSheet.create({
     pageContainer: {
       flex: 1,
-      justifyContent: 'center', // Center content vertically
       alignItems: 'center', // Center items horizontally
       paddingHorizontal: 50,
-    },
-    adminText: {
-    position: 'absolute',
-      top: 70, // Adjust top spacing
-      right: 50, // Align to the left
     },
     menuButton: {
       position: 'absolute',
@@ -117,17 +112,32 @@ const styles = StyleSheet.create({
       fontSize: 24,
       color: 'black',
       marginBottom: 20,
-      alignSelf: 'flex-start',
+      alignSelf: 'center',
+      position: 'absolute',
+      top: 600, // Adjust top spacing
 
     },
     buttonContainer: {
       alignSelf: 'center', // Align button to the left
+      position: 'absolute',
+      top: 670, // Adjust top spacing
+
     },
     button: {
       backgroundColor: 'black',
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 20,
+    },
+
+    logo: {
+      width: 200,
+      height: 310,
+      marginBottom: 20,
+      justifyContent: 'center',
+      position: 'absolute',
+      top: 140,
+
     },
     buttonText: {
       color: 'white',

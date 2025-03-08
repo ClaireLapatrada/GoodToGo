@@ -196,7 +196,6 @@ const AssessmentScreen: React.FC = () => {
 
   // Main render method - unified approach
   return (
-    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <FloatingBlobsBackground />
         <View style={styles.header}>
@@ -333,7 +332,6 @@ const AssessmentScreen: React.FC = () => {
           )}
         </View>
       </View>
-    </SafeAreaView>
   );
 };
 
