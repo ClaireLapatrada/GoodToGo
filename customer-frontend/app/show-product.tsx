@@ -335,7 +335,7 @@ const ShowProduct: React.FC = () => {
       { label: 'Side Angle 1', uri: null, status: 'red' },
       { label: 'Side Angle 2', uri: null, status: 'red' },
       { label: 'Bottom', uri: null, status: 'red' },
-      { label: 'Brand', uri: null, status: 'red' },
+      { label: 'Serial #', uri: null, status: 'red' },
     ]);
     setCurrentPhotoIndex(0);
     setCurrentUri(null);

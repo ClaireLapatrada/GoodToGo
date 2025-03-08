@@ -149,4 +149,4 @@ if __name__ == "__main__":
     for model_name, paths in models.items():
         add_model(model_name, paths["weights"], paths["classes"])
 
-    detect_defects(model_dict, ["result.jpg"], "mac-yolo/samples" )
+    detect_defects(model_dict, ["uploads/photo_1.jpg"], "" )

@@ -16,7 +16,7 @@ export const fetchData = async () => {
 };
 
 export const sendReturnData = async (photos: string[], reason: string) => {
-  const API_URL = 'http://192.168.68.70:5000/api/data'; // Replace with your actual URL
+  const API_URL = 'http://10.0.0.38:5000/api/data'; // Replace with your actual URL
 
   try {
     const response = await fetch(API_URL, {
