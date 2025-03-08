@@ -30,8 +30,8 @@ def draw_bounding_box(img, class_id, confidence, x, y, x_plus_w, y_plus_h, class
     label = f"{classes[class_id]} ({confidence:.2f})"
     print(label)
     color = colors[class_id]
-    cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
-    cv2.putText(img, label, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 5, color, 5)
+    cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 10)
+    cv2.putText(img, label, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 5, color, 10)
 
 def add_model(model_name: str, model_path: str, class_path: str):
     """
@@ -149,4 +149,4 @@ if __name__ == "__main__":
     for model_name, paths in models.items():
         add_model(model_name, paths["weights"], paths["classes"])
 
-    detect_defects(model_dict, ["uploads/photo_1.jpg"], "" )
+    detect_defects(model_dict, ["stain.png"], "" )
